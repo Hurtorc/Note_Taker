@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-app.use("/api", apiRoutes);
+app.use("/api/notes", apiRoutes);
 
 //GET request for index page
 app.get("/", (req, res) => {
