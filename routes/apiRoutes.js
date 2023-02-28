@@ -1,11 +1,11 @@
 const router = require("express").Router();
 const fs = require("fs");
-const uuid = require("uuid");
+const uuid = require("../utils/uuid.js");
 
 // GET request for notes
 router.get("/", (req, res) => {
   console.log(`GET request for notes: ${req.method}`);
-  let notes = JSON.parse(fs.readFileSync("../db/db.json", "utf8"));
+  const notes = JSON.parse(fs.readFileSync("../db/db.json", "utf8"));
   res.json(notes);
 });
 
@@ -32,10 +32,17 @@ router.post("/", (req, res) => {
 
 router.delete("/:id", (req, res) => {
   console.log(`DELETE request for notes: ${req.method}`);
-  let notes = JSON.parse(fs.readFileSync("../db/db.json", "utf8"));
-  notes.splice(req.params.id, 1);
+  const notes = JSON.parse(fs.readFileSync("../db/db.json", "utf8"));
+  const noteIndex = notes.findIndex((note) => note.id === req.params.id);
+
+  if (noteIndex !== -1) {
+    notes.splice(noteIndex, 1);
   fs.writeFileSync("../db/db.json", JSON.stringify(notes));
-  res.json(notes);
+  res.json(notes);   
+  }
+  else {
+    res.status(404).json({ message: "Note not found" });
+  }
 });
 
 module.exports = router;
